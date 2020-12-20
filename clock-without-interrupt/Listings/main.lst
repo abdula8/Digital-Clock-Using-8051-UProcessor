@@ -1,0 +1,434 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              12/13/2020 22:12:48 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\ABDULLAH\BFE\Embedded system\programms\programsFiles\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BR
+                    -OWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include<reg51.h>
+   2          #include "Port.h"
+   3          #include "main.h"
+   4          
+   5          void main()
+   6          {
+   7   1        initialization();
+   8   1        /*
+   9   1        uncomment the following line to use stop watch mode
+  10   1        */
+  11   1        while(1)
+  12   1        {
+  13   2        if(!edit_mode)
+  14   2          stopWatch(Seg_State[0],Seg_State[1],Seg_State[2],Seg_State[3],Seg_State[4],Seg_State[5]);
+  15   2        else if(!pause)
+  16   2          pause_clock();
+  17   2        else if(dgt_slct==0)
+  18   2        
+  19   2          digit_select();
+  20   2          if(dgt_ncrmnt==0)
+  21   2          {
+  22   3            digit_inc();
+  23   3          }
+  24   2        
+  25   2      }}
+  26          
+  27          
+  28          
+  29          void digit_select()
+  30          {
+  31   1        if (Seg_Control == 0x01)
+  32   1        {
+  33   2          Seg_Control = 0x20;
+  34   2        }
+  35   1        else{
+  36   2          Seg_Control = Seg_Control >> 1;
+  37   2          digit++;
+  38   2          digit=digit%6;
+  39   2        }
+  40   1        delay(1000);
+  41   1      }
+  42          
+  43          void digit_inc()
+  44          {
+  45   1        Seg_State[digit]++;
+  46   1        display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+  47   1        delay(1000);
+  48   1      }
+  49          
+  50          void initialization()
+  51          {
+  52   1        edit_mode = 1;      //INPUT
+  53   1        digit = 0;          //OUTPUT
+  54   1        dgt_ncrmnt = 1;     //INPUT
+C51 COMPILER V9.60.0.0   MAIN                                                              12/13/2020 22:12:48 PAGE 2   
+
+  55   1        dgt_slct = 1;       //INPUT
+  56   1        pause = 1;        //INPUT
+  57   1        IE = 0x85;                // 1000 0101 // bydefault INT is enabled to set the clock 
+  58   1        /* Enabling this digit to start shifting and Seg_Control variable gets a initial value*/
+  59   1        Seg_Control = 0x01;       // to enable first Digit in the 6-digit_7-SEG
+  60   1      }
+  61          
+  62          
+  63          /**
+  64          Stop Watch Mode
+  65          */
+  66          /*
+  67          I! refer to index #1 of the array ==> Seg_State
+  68          */
+  69          void stopWatch(tWord I1, tWord I2, tWord I3, tWord I4, tWord I5, tWord I6)
+  70          {
+  71   1        tWord con0, con1, con2, con3, con4, con5, con6;
+  72   1        con1=I1; con2=I2; con3=I3; con4=I4;
+  73   1        con5=I5; con6=I6;
+  74   1        
+  75   1        //edit_mode = 1;
+  76   1        
+  77   1        while(!edit_mode)
+  78   1        {
+  79   2          //delay(500);
+  80   2          Seg_State[0]=con1;
+  81   2          Seg_State[1]=con2;
+  82   2          Seg_State[2]=con3;
+  83   2          Seg_State[3]=con4;
+  84   2          Seg_State[4]=con5;
+  85   2          Seg_State[5]=con6;
+  86   2          
+  87   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+  88   2          con0++;
+  89   2          if(con0 == 5)// // should be 60 to count second correctly
+  90   2          {
+  91   3            con0 = 0;
+  92   3            con1++;
+  93   3            Seg_State[0] = con1;
+  94   3          }
+  95   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+  96   2          if ((con1==10))// || (Seg_State[0]==10))  // con1 == 10
+  97   2          {
+  98   3            con1 = 0;
+  99   3            con2++;
+ 100   3            Seg_State[1] = con2;
+ 101   3          }
+ 102   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 103   2          if ((con2==6))//|| (Seg_State[1]==3)) // con1 == 6
+ 104   2          {
+ 105   3            con2 = 0;
+ 106   3            con3++;
+ 107   3            Seg_State[2] = con3;
+ 108   3          }
+ 109   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 110   2          if((con3==10))//|| (Seg_State[2]==2)) // con1 == 10
+ 111   2          { 
+ 112   3            con3 = 0;
+ 113   3            con4++;
+ 114   3            Seg_State[3] = con4;
+ 115   3          }
+ 116   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+C51 COMPILER V9.60.0.0   MAIN                                                              12/13/2020 22:12:48 PAGE 3   
+
+ 117   2            if ((con4 == 6))//|| (Seg_State[3]==2)) // con1 == 6
+ 118   2            {
+ 119   3              con4 = 0;
+ 120   3              con5++;
+ 121   3              Seg_State[4] = con5;
+ 122   3            }
+ 123   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 124   2            if ((con5 == 10))//|| (Seg_State[4]==2)) // con1 == 10
+ 125   2            {
+ 126   3              con5 = 0;
+ 127   3              con6++;
+ 128   3              Seg_State[5] = con6;
+ 129   3            }
+ 130   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 131   2            if ((con5==4&&con6==2))// || (Seg_State[5]==2&&Seg_State[4]>3))
+ 132   2            {
+ 133   3              con6 = con5 = con4 = con3 = con2 = con1 = 0;
+ 134   3            }
+ 135   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 136   2        } 
+ 137   1      //Seg_Pause();
+ 138   1      }
+ 139          
+ 140          /*  
+ 141              display function
+ 142              for hour, minutes 
+ 143              and seconds
+ 144          */
+ 145          void display(tWord LH, tWord RH, tWord LM, tWord RM, tWord LS, tWord RS)
+ 146          {
+ 147   1        if(!edit_mode)
+ 148   1        {
+ 149   2          /*  Display Hours  */
+ 150   2          Seg_Control = 0x01;
+ 151   2          if((LH>3) && (RH>=2))
+ 152   2          {
+ 153   3            LH=0;
+ 154   3            RH=0;
+ 155   3          }
+ 156   2          
+ 157   2          Seg_Data = arr[LH%3];
+ 158   2          delay(msec);
+ 159   2          Seg_Control = 0x02;
+ 160   2          Seg_Data = arr[RH%10];
+ 161   2          delay(msec);
+ 162   2          /*  Display Minutes  */
+ 163   2          Seg_Control = 0x04;
+ 164   2          Seg_Data = arr[LM%6];
+ 165   2          delay(msec);
+ 166   2          Seg_Control = 0x08;
+ 167   2          Seg_Data = arr[RM%10];
+ 168   2          delay(msec);
+ 169   2          
+ 170   2          /*  Display Minutes  */
+ 171   2          Seg_Control = 0x10;
+ 172   2          Seg_Data = arr[LS%6];
+ 173   2          delay(msec);
+ 174   2          Seg_Control = 0x20;
+ 175   2          Seg_Data = arr[RS%10];
+ 176   2          delay(msec);
+ 177   2        }
+ 178   1        else
+C51 COMPILER V9.60.0.0   MAIN                                                              12/13/2020 22:12:48 PAGE 4   
+
+ 179   1        {
+ 180   2          if (digit == 5)
+ 181   2          {
+ 182   3            /*  Display Hours  */
+ 183   3            Seg_Control = 0x01;
+ 184   3            Seg_Data = arr[LH%3];
+ 185   3            delay(msec);
+ 186   3          }else if(digit == 4)
+ 187   2            {
+ 188   3            Seg_Control = 0x02;
+ 189   3            Seg_Data = arr[RH%10];
+ 190   3            delay(msec);
+ 191   3          }else if(digit == 3)
+ 192   2          {
+ 193   3            /*  Display Minutes  */
+ 194   3            Seg_Control = 0x04;
+ 195   3            Seg_Data = arr[LM%6];
+ 196   3            delay(msec);
+ 197   3          }else if(digit == 2)
+ 198   2            {
+ 199   3            Seg_Control = 0x08;
+ 200   3            Seg_Data = arr[RM%10];
+ 201   3            delay(msec);
+ 202   3          }else if(digit == 1)
+ 203   2            {
+ 204   3            /*  Display Minutes  */
+ 205   3            Seg_Control = 0x10;
+ 206   3            Seg_Data = arr[LS%6];
+ 207   3            delay(msec);
+ 208   3          }else if(digit == 0)
+ 209   2            {
+ 210   3            Seg_Control = 0x20;
+ 211   3            Seg_Data = arr[RS%10];
+ 212   3            delay(msec);
+ 213   3          }
+ 214   2        }
+ 215   1      }
+ 216          void pause_clock()
+ 217          {
+ 218   1        
+ 219   1        /*  Display Hours  */
+ 220   1          Seg_Control = 0x01;
+ 221   1          Seg_Data = arr[Seg_State[5]%3];
+ 222   1          delay(msec);
+ 223   1        
+ 224   1          Seg_Control = 0x02;
+ 225   1          Seg_Data = arr[Seg_State[4]%10];
+ 226   1          delay(msec);
+ 227   1        
+ 228   1        /*  Display Hours  */
+ 229   1          Seg_Control = 0x04;
+ 230   1          Seg_Data = arr[Seg_State[3]%6];
+ 231   1          delay(msec);
+ 232   1        
+ 233   1          Seg_Control = 0x08;
+ 234   1          Seg_Data = arr[Seg_State[2]%10];
+ 235   1          delay(msec);
+ 236   1        
+ 237   1        /*  Display Hours  */
+ 238   1          Seg_Control = 0x10;
+ 239   1          Seg_Data = arr[Seg_State[1]%6];
+ 240   1          delay(msec);
+C51 COMPILER V9.60.0.0   MAIN                                                              12/13/2020 22:12:48 PAGE 5   
+
+ 241   1        
+ 242   1          Seg_Control = 0x20;
+ 243   1          Seg_Data = arr[Seg_State[0]%10];
+ 244   1          delay(msec);
+ 245   1        
+ 246   1      }
+ 247          void delay(int num)
+ 248          {
+ 249   1        int i;
+ 250   1        int j;
+ 251   1        for(i=0; i<num; i++)
+ 252   1          for(j=0; j<50; j++);
+ 253   1      }
+ 254          
+ 255          void seg_counter()
+ 256          {
+ 257   1        unsigned int con1, con2, con3, con4, con5, con6;
+ 258   1        con1=0; con2=0; con3=0; con4=0;
+ 259   1        con5=0; con6=0;
+ 260   1        counter = 0;
+ 261   1        
+ 262   1        dgt_slct = 1;
+ 263   1        dgt_ncrmnt = 0;
+ 264   1        while(!dgt_slct)
+ 265   1        {
+ 266   2          if (!dgt_ncrmnt)
+ 267   2          counter = counter + 1;
+ 268   2          
+ 269   2          display(counter,3, 6, 5, 5, 7);
+ 270   2      
+ 271   2          display(counter+10, 3, 6, 3, 5, 7);
+ 272   2      
+ 273   2        }
+ 274   1          //seg_reset(); renames to  //Seg_Pause
+ 275   1      }
+ 276          
+ 277          void Seg_Pause()
+ 278          {
+ 279   1          while(dgt_slct) //dgt_slct
+ 280   1        {
+ 281   2          Seg_Control = 0x01;
+ 282   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 283   2          delay(msec);
+ 284   2          Seg_Control = 0x02;
+ 285   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 286   2          delay(msec);
+ 287   2          Seg_Control = 0x04;
+ 288   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 289   2          delay(msec);
+ 290   2          Seg_Control = 0x08;
+ 291   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 292   2          delay(msec);
+ 293   2          Seg_Control = 0x20;
+ 294   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 295   2          delay(msec);
+ 296   2          Seg_Control = 0x10;
+ 297   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 298   2          delay(msec);
+ 299   2          if (edit_mode)
+ 300   2          {
+ 301   3            Seg_Switch();
+ 302   3          }
+C51 COMPILER V9.60.0.0   MAIN                                                              12/13/2020 22:12:48 PAGE 6   
+
+ 303   2        }
+ 304   1        stopWatch(Seg_State[0],Seg_State[1],Seg_State[2],Seg_State[3],Seg_State[4],Seg_State[5]);
+ 305   1      }
+ 306          
+ 307          
+ 308          /*
+ 309          This function enable one segment to be used in the Seg_Increment() function
+ 310          
+ 311          How it works:
+ 312          
+ 313          1- Pressing the EDIT button this function will be called.
+ 314          2- enable the first SEG if done editing then switch to 2nd one.
+ 315          3- Pressing the button increment is calling the Seg_Increment() function
+ 316          
+ 317          ==> Enabling specific segment
+ 318          calling Seg_Display() function to do that
+ 319          */
+ 320          void Seg_Switch()
+ 321          {
+ 322   1        
+ 323   1        counter  = 0;
+ 324   1        
+ 325   1        //while(edit_sw)
+ 326   1        {
+ 327   2          while(1) 
+ 328   2            if(edit_mode) // seg_SW switch between segments to be edited
+ 329   2            {
+ 330   3              counter++;
+ 331   3              break;
+ 332   3            }
+ 333   2          Seg_Display(counter%6); // to start editing segment one
+ 334   2            /*
+ 335   2          increment segment using its array Seg_State[index]
+ 336   2          */
+ 337   2          Seg_Increment();
+ 338   2        }
+ 339   1      }
+ 340          /*
+ 341          Seg_Increment() function to increment according to 
+ 342          Increment SW, No need to know the target segment
+ 343          */
+ 344          
+ 345          void Seg_Increment()
+ 346          {
+ 347   1        while(1)
+ 348   1        {
+ 349   2          if (dgt_ncrmnt)
+ 350   2          {
+ 351   3            Seg_State[counter%6]++;
+ 352   3            display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 353   3            
+ 354   3            break;
+ 355   3          }
+ 356   2        }
+ 357   1      }
+ 358          
+ 359          /*
+ 360          Seg_Display() function to display on ... the target segment 
+ 361          to be edited.
+ 362          */
+ 363          void Seg_Display(tWord seg_num)
+ 364          {
+C51 COMPILER V9.60.0.0   MAIN                                                              12/13/2020 22:12:48 PAGE 7   
+
+ 365   1        switch(seg_num)
+ 366   1        {
+ 367   2          case 1:
+ 368   2            Seg_Control = 0x20;
+ 369   2            Seg_Data = arr[Seg_State[counter%6]];
+ 370   2            delay(msec);
+ 371   2            break;
+ 372   2          case 2:
+ 373   2            Seg_Control = 0x10;
+ 374   2            Seg_Data = arr[Seg_State[1]];
+ 375   2            delay(msec);
+ 376   2            break;
+ 377   2          case 3:
+ 378   2            Seg_Control = 0x08;
+ 379   2            Seg_Data = arr[Seg_State[2]];
+ 380   2            delay(msec);
+ 381   2            break;
+ 382   2          case 4:
+ 383   2            Seg_Control = 0x04;
+ 384   2            Seg_Data = arr[Seg_State[3]];
+ 385   2            delay(msec);
+ 386   2            break;
+ 387   2          case 5:
+ 388   2            Seg_Control = 0x02;
+ 389   2            Seg_Data = arr[Seg_State[4]];
+ 390   2            delay(msec);
+ 391   2            break;
+ 392   2          case 6:
+ 393   2            Seg_Control = 0x01;
+ 394   2            Seg_Data = arr[Seg_State[5]];
+ 395   2            delay(msec);
+ 396   2            break;
+ 397   2        }
+ 398   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1269    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     38      50
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

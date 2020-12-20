@@ -1,0 +1,283 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    12/13/2020  23:25:47  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+D:\ABDULLAH\BFE\EMBEDDED SYSTEM\PROGRAMMS\PROGRAMSFILES\C51\BIN\BL51.EXE .\Objects\main.obj, .\Objects\Delay.obj TO .\Ob
+>> jects\heart_ledds PRINT (.\Listings\heart_ledds.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\main.obj (MAIN)
+  .\Objects\Delay.obj (DELAY)
+  D:\ABDULLAH\BFE\EMBEDDED SYSTEM\PROGRAMMS\PROGRAMSFILES\C51\LIB\C51S.LIB (?C_STARTUP)
+  D:\ABDULLAH\BFE\EMBEDDED SYSTEM\PROGRAMMS\PROGRAMSFILES\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  .\Objects\heart_ledds (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0005H     UNIT         ?DT?MAIN
+            DATA    000DH     0002H     UNIT         _DATA_GROUP_
+            IDATA   000FH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0003H     ABSOLUTE     
+                    0006H     000DH                  *** GAP ***
+            CODE    0013H     0003H     ABSOLUTE     
+                    0016H     0015H                  *** GAP ***
+            CODE    002BH     0003H     ABSOLUTE     
+                    002EH     07D2H                  *** GAP ***
+            CODE    0800H     0096H     UNIT         ?PR?INTERRUPTTIMER2_ISR?MAIN
+            CODE    0896H     008CH     UNIT         ?C_C51STARTUP
+            CODE    0922H     0029H     UNIT         ?PR?INITIALIZATION?MAIN
+            CODE    094BH     001DH     UNIT         ?PR?_DELAY_S?DELAY
+            CODE    0968H     0019H     UNIT         ?PR?_DELAY_MS?DELAY
+            CODE    0981H     000FH     UNIT         ?PR?DELAY_1MS?DELAY
+            CODE    0990H     000EH     UNIT         ?C_INITSEG
+            CODE    099EH     000DH     UNIT         ?PR?DELAY_50MS_TIMER?DELAY
+            CODE    09ABH     0006H     UNIT         ?PR?MAIN?MAIN
+            CODE    09B1H     0005H     UNIT         ?PR?OPERATION?MAIN
+            CODE    09B6H     0004H     UNIT         ?PR?GOTO_SLEEP?MAIN
+            CODE    09BAH     0004H     UNIT         ?PR?INTERRUPTEX0_ISR?MAIN
+            CODE    09BEH     0004H     UNIT         ?PR?INTERRUPTEX1_ISR?MAIN
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\heart_ledds (MAIN)
+
+
+SEGMENT                                DATA_GROUP 
+  +--> CALLED SEGMENT                START    LENGTH
+----------------------------------------------------
+?PR?INTERRUPTTIMER2_ISR?MAIN         -----    -----
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/13/2020  23:25:47  PAGE 2
+
+
+  +--> ?PR?_DELAY_S?DELAY
+
+?PR?_DELAY_S?DELAY                   000DH    0002H
+  +--> ?PR?_DELAY_MS?DELAY
+
+?PR?_DELAY_MS?DELAY                  -----    -----
+  +--> ?PR?DELAY_1MS?DELAY
+
+*** NEW ROOT ***************************************************
+
+?C_C51STARTUP                        -----    -----
+  +--> ?PR?MAIN?MAIN
+  +--> ?C_INITSEG
+
+?PR?MAIN?MAIN                        -----    -----
+  +--> ?PR?INITIALIZATION?MAIN
+  +--> ?PR?OPERATION?MAIN
+
+?PR?INITIALIZATION?MAIN              -----    -----
+  +--> ?PR?_DELAY_MS?DELAY
+
+?PR?OPERATION?MAIN                   -----    -----
+  +--> ?PR?GOTO_SLEEP?MAIN
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\heart_ledds (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  D:0008H         PUBLIC        isLeftDir
+  D:00A8H         PUBLIC        IE
+  C:09B6H         PUBLIC        GOTO_SLEEP
+  B:00B0H.2       PUBLIC        Ex0Pin
+  D:0009H         PUBLIC        isOk
+  B:00B0H.3       PUBLIC        Ex1Pin
+  D:00B8H         PUBLIC        IP
+  D:000AH         PUBLIC        ticks
+  D:00CBH         PUBLIC        RCAP2H
+  D:00CAH         PUBLIC        RCAP2L
+  C:09ABH         PUBLIC        main
+  D:0087H         PUBLIC        PCON
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  B:00C8H.7       PUBLIC        TF2
+  B:0088H.0       PUBLIC        IT0
+  D:00CDH         PUBLIC        TH2
+  B:0090H.2       PUBLIC        led_9
+  D:000CH         PUBLIC        curState
+  D:00CCH         PUBLIC        TL2
+  C:09B1H         PUBLIC        operation
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/13/2020  23:25:47  PAGE 3
+
+
+  B:00C8H.2       PUBLIC        TR2
+  C:0800H         PUBLIC        InterruptTimer2_ISR
+  D:00C8H         PUBLIC        T2CON
+  C:09BAH         PUBLIC        InterruptEX0_ISR
+  C:09BEH         PUBLIC        InterruptEX1_ISR
+  C:0922H         PUBLIC        initialization
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          MAIN
+  C:09ABH         LINE#         20
+  C:09ABH         LINE#         21
+  C:09AEH         LINE#         22
+  -------         ENDPROC       MAIN
+  -------         PROC          GOTO_SLEEP
+  C:09B6H         LINE#         24
+  C:09B6H         LINE#         25
+  C:09B9H         LINE#         26
+  -------         ENDPROC       GOTO_SLEEP
+  -------         PROC          INITIALIZATION
+  C:0922H         LINE#         27
+  C:0922H         LINE#         29
+  C:0924H         LINE#         30
+  C:0927H         LINE#         31
+  C:092DH         LINE#         32
+  C:0930H         LINE#         33
+  C:0932H         LINE#         34
+  C:0934H         LINE#         41
+  C:0937H         LINE#         42
+  C:093AH         LINE#         43
+  C:093DH         LINE#         44
+  C:0940H         LINE#         45
+  C:0943H         LINE#         46
+  C:0945H         LINE#         47
+  C:0947H         LINE#         48
+  C:094AH         LINE#         50
+  -------         ENDPROC       INITIALIZATION
+  -------         PROC          INTERRUPTEX0_ISR
+  C:09BAH         LINE#         52
+  C:09BAH         LINE#         53
+  C:09BDH         LINE#         54
+  -------         ENDPROC       INTERRUPTEX0_ISR
+  -------         PROC          INTERRUPTEX1_ISR
+  C:09BEH         LINE#         58
+  C:09BEH         LINE#         59
+  C:09C1H         LINE#         60
+  -------         ENDPROC       INTERRUPTEX1_ISR
+  -------         PROC          INTERRUPTTIMER2_ISR
+  C:0800H         LINE#         63
+  C:081DH         LINE#         64
+  C:081FH         LINE#         65
+  C:0825H         LINE#         66
+  C:0830H         LINE#         67
+  C:0838H         LINE#         68
+  C:0838H         LINE#         69
+  C:083EH         LINE#         70
+  C:0845H         LINE#         71
+  C:0848H         LINE#         72
+  C:084BH         LINE#         73
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/13/2020  23:25:47  PAGE 4
+
+
+  C:084DH         LINE#         74
+  C:0853H         LINE#         75
+  C:0853H         LINE#         76
+  C:0855H         LINE#         77
+  C:0855H         LINE#         78
+  C:085BH         LINE#         79
+  C:0862H         LINE#         80
+  C:0864H         LINE#         81
+  C:0866H         LINE#         82
+  C:0866H         LINE#         83
+  C:0868H         LINE#         84
+  C:0868H         LINE#         85
+  C:086BH         LINE#         86
+  C:086BH         LINE#         87
+  C:0871H         LINE#         88
+  C:0873H         LINE#         89
+  C:087BH         LINE#         90
+  C:087BH         LINE#         91
+  C:087BH         LINE#         94
+  -------         ENDPROC       INTERRUPTTIMER2_ISR
+  -------         PROC          OPERATION
+  C:09B1H         LINE#         97
+  C:09B1H         LINE#         98
+  C:09B1H         LINE#         99
+  -------         ENDPROC       OPERATION
+  -------         ENDMOD        MAIN
+
+  -------         MODULE        DELAY
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:099EH         PUBLIC        delay_50ms_Timer
+  C:0968H         PUBLIC        _Delay_ms
+  D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  C:094BH         PUBLIC        _Delay_s
+  B:0088H.5       PUBLIC        TF0
+  D:008CH         PUBLIC        TH0
+  D:008AH         PUBLIC        TL0
+  B:0088H.4       PUBLIC        TR0
+  C:0981H         PUBLIC        Delay_1ms
+  D:00C8H         PUBLIC        T2CON
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          DELAY_1MS
+  -------         DO            
+  D:0006H         SYMBOL        i
+  -------         ENDDO         
+  C:0981H         LINE#         8
+  C:0981H         LINE#         10
+  C:098FH         LINE#         11
+  -------         ENDPROC       DELAY_1MS
+  -------         PROC          _DELAY_MS
+  D:0004H         SYMBOL        x
+  -------         DO            
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/13/2020  23:25:47  PAGE 5
+
+
+  D:0002H         SYMBOL        i
+  -------         ENDDO         
+  C:0968H         LINE#         13
+  C:096CH         LINE#         15
+  C:0976H         LINE#         16
+  C:0979H         LINE#         17
+  C:0980H         LINE#         18
+  -------         ENDPROC       _DELAY_MS
+  -------         PROC          _DELAY_S
+  D:000DH         SYMBOL        x
+  -------         DO            
+  D:0082H         SYMBOL        i
+  -------         ENDDO         
+  C:094BH         LINE#         20
+  C:094FH         LINE#         21
+  C:094FH         LINE#         23
+  C:095DH         LINE#         24
+  C:0964H         LINE#         25
+  C:0967H         LINE#         26
+  -------         ENDPROC       _DELAY_S
+  -------         PROC          DELAY_50MS_TIMER
+  C:099EH         LINE#         29
+  C:099EH         LINE#         32
+  C:09A1H         LINE#         33
+  C:09A4H         LINE#         34
+  C:09A7H         LINE#         35
+  C:09A9H         LINE#         36
+  -------         ENDPROC       DELAY_50MS_TIMER
+  -------         ENDMOD        DELAY
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?DELAY_50MS_TIMER?DELAY
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 013EH BYTE (15%) *
+******************************************************************************
+
+Program Size: data=16.0 xdata=0 code=462
+LINK/LOCATE RUN COMPLETE.  1 WARNING(S),  0 ERROR(S)

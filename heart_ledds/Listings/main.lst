@@ -1,0 +1,126 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              12/13/2020 23:25:46 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\ABDULLAH\BFE\Embedded system\programms\programsFiles\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BR
+                    -OWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include "Ports.h"
+   3          #include "Interrupt.h"
+   4          #include "Delay.h"
+   5          #include "DataTypes.h"
+   6          
+   7          #define TIMER_COUNTER 5
+   8          
+   9          boolean isLeftDir=true;
+  10          boolean isOk=true;
+  11          tWord ticks=0;
+  12          typedef enum {LeftDir, RightDir} states;
+  13          states curState=LeftDir;
+  14          
+  15          
+  16          void initialization();
+  17          void operation();
+  18          void GOTO_SLEEP();
+  19          
+  20          void main(void){
+  21   1        initialization();
+  22   1        operation();
+  23   1      }
+  24          void GOTO_SLEEP(){
+  25   1        PCON |=1; // power down mode
+  26   1      }
+  27          void initialization(){
+  28   1        //ButtonPort=0xff;
+  29   1        led_9=0;
+  30   1        LedsPort=0;
+  31   1        Delay_ms(1);
+  32   1        LedsPort=1;
+  33   1        Ex0Pin = 1;
+  34   1        Ex1Pin = 1;
+  35   1        /*TMOD=1;
+  36   1        TH0=0x3C;
+  37   1        TL0=0xB0;
+  38   1        TR0=1;*/
+  39   1        
+  40   1        // TIMER 2
+  41   1        T2CON = 0x04;     // Load Timer 2 Control Register
+  42   1        TH2 = 0x3C;       // Load Timer 2 high byte
+  43   1        RCAP2H = 0x3C;    // Load Timer 2 reload Capt. reg. high byte
+  44   1        TL2 = 0xB0;       // Load Timer 2 Low byte
+  45   1        RCAP2L = 0xB0;    // Load Timer 2 reload Capt. reg. low byte
+  46   1        TR2 = 1;          // Start Timer 2
+  47   1        IT0 = 1;          // EX0 INT0 Edge Triggred
+  48   1        IE=0xA5;          // 1010 0000 TO Enabel Timer 2 Interrupt INT0 and INT1
+  49   1      
+  50   1      }
+  51          // ISR INT0
+  52          void InterruptEX0_ISR() interrupt InterruptEX0{
+  53   1        isOk=false;
+  54   1      }
+C51 COMPILER V9.60.0.0   MAIN                                                              12/13/2020 23:25:46 PAGE 2   
+
+  55          
+  56          
+  57          // ISR INT1
+  58          void InterruptEX1_ISR() interrupt InterruptEX1{
+  59   1        isOk=true;
+  60   1      }
+  61          
+  62          // ISR TIMER 2
+  63          void InterruptTimer2_ISR() interrupt InterruptTimer2{
+  64   1        TF2 = 0;
+  65   1        if (isOk==true){
+  66   2        if(ticks>TIMER_COUNTER){
+  67   3          switch(curState){
+  68   4            case LeftDir:
+  69   4              LedsPort=LedsPort<<1;
+  70   4              if(LedsPort==128){
+  71   5                curState=RightDir;
+  72   5                LedsPort=0xFF;
+  73   5                led_9=1;
+  74   5                Delay_s(1);
+  75   5              }
+  76   4              break;
+  77   4            case RightDir:
+  78   4              LedsPort=LedsPort>>1;
+  79   4              if(LedsPort==1){
+  80   5                curState=LeftDir;
+  81   5                led_9=0;
+  82   5              }
+  83   4              break;
+  84   4            default:
+  85   4              LedsPort=255;
+  86   4          }
+  87   3          ticks=0;
+  88   3        }else{
+  89   3          ticks++;
+  90   3          }
+  91   2        }
+  92   1      //  TH0=0x3C;
+  93   1      //  TL0=0xB0;
+  94   1      }
+  95             
+  96          
+  97          void operation(){
+  98   1        while(1)
+  99   1          GOTO_SLEEP();
+ 100   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    214    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

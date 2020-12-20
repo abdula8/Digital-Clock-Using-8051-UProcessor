@@ -1,0 +1,3 @@
+".\Objects\main.obj" 
+TO ".\Objects\CasioDigitalClock" 
+PRINT(".\Listings\CasioDigitalClock.m51") RAMSIZE(256) 

@@ -1,0 +1,316 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              12/13/2020 00:30:40 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\ABDULLAH\BFE\Embedded system\programms\programsFiles\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BR
+                    -OWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          
+   2          
+   3          
+   4          
+   5          /****
+   6          * * *
+   7          * The Digits has an error in its value 
+   8          
+   9          * that get from edit mode beacuse it is related to digit variable 
+  10          the digit variable is the variable icrements with shift of 7-SEG_degit in INT0
+  11          
+  12          * digit variable is being with INT0 
+  13          
+  14          * this conflicts with the value
+  15          
+  16          * displayed on the 7-SEG digit
+  17          * 
+  18          * 
+  19          ***
+  20          */
+  21          
+  22          
+  23          
+  24          
+  25          
+  26          
+  27          #include <reg52.h>
+  28          #include "Interrupt.h"
+  29          #include "Ports.h"
+  30          
+  31          
+  32          #define msec 1
+  33          
+  34          // Typedefs
+  35          typedef unsigned char tByte;
+  36          typedef unsigned int tWord;
+  37          typedef unsigned long tLong;
+  38          typedef enum {last_digit, first_digit} boolean;
+  39          
+  40          /* The digit variable to display on the clock after increment*/
+  41          tWord digit;
+  42          tWord arr[10]={0x40,0xF9,0x24,0x30,0x19,0x12,0x02,0xF8,0x00,0x10};
+  43          tWord Seg_State[6] = {0, 0, 0, 0, 0, 0};
+  44          boolean digit_move = last_digit;
+  45          
+  46          void display(tWord LH, tWord RH, tWord LM, tWord RM, tWord LS, tWord RS);
+  47          void delay(tWord num);
+  48          void initialization();
+  49          void stopWatch(tWord I1, tWord I2, tWord I3, tWord I4, tWord I5, tWord I6);
+  50          
+  51          void main(void)
+  52          {
+  53   1        //Seg_Control = 0xFF; //0010  0001
+  54   1        //Seg_Data = arr[2];
+C51 COMPILER V9.60.0.0   MAIN                                                              12/13/2020 00:30:40 PAGE 2   
+
+  55   1        
+  56   1        initialization();
+  57   1        while(1){
+  58   2          if (!edit_mode)
+  59   2          {
+  60   3            digit=0;
+  61   3            stopWatch(Seg_State[0],Seg_State[1],Seg_State[2],Seg_State[3],Seg_State[4],Seg_State[5]);
+  62   3          }
+  63   2        }
+  64   1        
+  65   1      }
+  66          
+  67          void initialization(){
+  68   1        
+  69   1        edit_mode = 1;
+  70   1        digit = 0;                //OUTPUT
+  71   1        increment_digit = 1;      //INPUT
+  72   1        digit_select = 1;         //INPUT
+  73   1        IE = 0x85;                // 1000 0101 // bydefault INT is enabled to set the clock 
+  74   1        /* Enabling this digit to start shifting and Seg_Control variable gets a initial value*/
+  75   1        Seg_Control = 0x01;       // to enable first Digit in the 6-digit_7-SEG
+  76   1        
+  77   1      }
+  78          
+  79          // ISR INT0
+  80          // Digit Selector
+  81          void InterruptEX0_ISR() interrupt InterruptEX0{
+  82   1        if (Seg_Control == 0x01)
+  83   1        {
+  84   2          Seg_Control = 0x20;
+  85   2          //digit = 1;
+  86   2        }
+  87   1        else{
+  88   2          Seg_Control = Seg_Control >> 1;
+  89   2          //digit+=5;
+  90   2          /* There is a problem in digit variable beacause it makes the displayed value to be displayed in another
+             - target digit */
+  91   2          digit++;
+  92   2          digit=digit%6;
+  93   2        }
+  94   1        delay(1000);
+  95   1      }
+  96          
+  97          // ISR INT1
+  98          void InterruptEX1_ISR() interrupt InterruptEX1{
+  99   1        
+ 100   1        /* There is a problem in displaying the target value to be displayed in its targeted digit that increment
+             -ed from INT0 */
+ 101   1        //Seg_State[digit%6]++;
+ 102   1        Seg_State[digit]++;
+ 103   1        /*
+ 104   1        Working on displaying numbers in a specific digit with 
+ 105   1        digit specifications==> i mean: last hour digit is <= 2, minutes left digit < 6, and left digit of second
+             -s is also < 6;
+ 106   1        */
+ 107   1        //if (digit == 5)
+ 108   1          //Seg_Data = arr[Seg_State[digit]%3];
+ 109   1          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 110   1        //else if(digit == 1 || digit == 3)
+ 111   1          //Seg_Data = arr[Seg_State[digit]%6];
+ 112   1        //else
+ 113   1          //Seg_Data = arr[Seg_State[digit]%10];
+C51 COMPILER V9.60.0.0   MAIN                                                              12/13/2020 00:30:40 PAGE 3   
+
+ 114   1          
+ 115   1        //Seg_Data = arr[Seg_State[digit]];
+ 116   1        delay(1000);
+ 117   1        
+ 118   1      }
+ 119          
+ 120          void delay(tWord num)
+ 121          {
+ 122   1        tWord i, j;
+ 123   1        for(i=0; i<num; i++)
+ 124   1          for(j=0; j<50; j++);
+ 125   1      }
+ 126          
+ 127          
+ 128          /*  
+ 129              display function
+ 130              for hour, minutes 
+ 131              and seconds
+ 132          */
+ 133          
+ 134          void display(tWord LH, tWord RH, tWord LM, tWord RM, tWord LS, tWord RS)
+ 135          {
+ 136   1        if(!edit_mode)
+ 137   1        {
+ 138   2          /*  Display Hours  */
+ 139   2          Seg_Control = 0x01;
+ 140   2          if((LH>3) && (RH>=2))
+ 141   2          {
+ 142   3            LH=0;
+ 143   3            RH=0;
+ 144   3          }
+ 145   2          
+ 146   2          Seg_Data = arr[LH%3];
+ 147   2          delay(msec);
+ 148   2          Seg_Control = 0x02;
+ 149   2          Seg_Data = arr[RH%10];
+ 150   2          delay(msec);
+ 151   2          /*  Display Minutes  */
+ 152   2          Seg_Control = 0x04;
+ 153   2          Seg_Data = arr[LM%6];
+ 154   2          delay(msec);
+ 155   2          Seg_Control = 0x08;
+ 156   2          Seg_Data = arr[RM%10];
+ 157   2          delay(msec);
+ 158   2          
+ 159   2          /*  Display Minutes  */
+ 160   2          Seg_Control = 0x10;
+ 161   2          Seg_Data = arr[LS%6];
+ 162   2          delay(msec);
+ 163   2          Seg_Control = 0x20;
+ 164   2          Seg_Data = arr[RS%10];
+ 165   2          delay(msec);
+ 166   2        }
+ 167   1        else
+ 168   1        {
+ 169   2          if (digit == 5)
+ 170   2          {
+ 171   3            /*  Display Hours  */
+ 172   3            Seg_Control = 0x01;
+ 173   3            Seg_Data = arr[LH%3];
+ 174   3            delay(msec);
+ 175   3          }else if(digit == 4)
+C51 COMPILER V9.60.0.0   MAIN                                                              12/13/2020 00:30:40 PAGE 4   
+
+ 176   2            {
+ 177   3            Seg_Control = 0x02;
+ 178   3            Seg_Data = arr[RH%10];
+ 179   3            delay(msec);
+ 180   3          }else if(digit == 3)
+ 181   2          {
+ 182   3            /*  Display Minutes  */
+ 183   3            Seg_Control = 0x04;
+ 184   3            Seg_Data = arr[LM%6];
+ 185   3            delay(msec);
+ 186   3          }else if(digit == 2)
+ 187   2            {
+ 188   3            Seg_Control = 0x08;
+ 189   3            Seg_Data = arr[RM%10];
+ 190   3            delay(msec);
+ 191   3          }else if(digit == 1)
+ 192   2            {
+ 193   3            /*  Display Minutes  */
+ 194   3            Seg_Control = 0x10;
+ 195   3            Seg_Data = arr[LS%6];
+ 196   3            delay(msec);
+ 197   3          }else if(digit == 0)
+ 198   2            {
+ 199   3            Seg_Control = 0x20;
+ 200   3            Seg_Data = arr[RS%10];
+ 201   3            delay(msec);
+ 202   3          }
+ 203   2        }
+ 204   1      }
+ 205          
+ 206          
+ 207          /**
+ 208          Stop Watch Mode
+ 209          */
+ 210          /*
+ 211          I! refer to index #1 of the array ==> Seg_State
+ 212          */
+ 213          void stopWatch(tWord I1, tWord I2, tWord I3, tWord I4, tWord I5, tWord I6)
+ 214          {
+ 215   1        unsigned int con0, con1, con2, con3, con4, con5, con6;
+ 216   1        con1=I1; con2=I2; con3=I3; con4=I4;
+ 217   1        con5=I5; con6=I6;
+ 218   1        
+ 219   1        //edit_mode = 1;
+ 220   1        
+ 221   1        while(!edit_mode)
+ 222   1        {
+ 223   2          //delay(500);
+ 224   2          Seg_State[0]=con1;
+ 225   2          Seg_State[1]=con2;
+ 226   2          Seg_State[2]=con3;
+ 227   2          Seg_State[3]=con4;
+ 228   2          Seg_State[4]=con5;
+ 229   2          Seg_State[5]=con6;
+ 230   2          
+ 231   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 232   2          con0++;
+ 233   2          if(con0 == 35)// // should be 60 to count second correctly
+ 234   2          {
+ 235   3            con0 = 0;
+ 236   3            con1++;
+ 237   3            Seg_State[0] = con1;
+C51 COMPILER V9.60.0.0   MAIN                                                              12/13/2020 00:30:40 PAGE 5   
+
+ 238   3          }
+ 239   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 240   2          if ((con1==10))// || (Seg_State[0]==10))  // con1 == 10
+ 241   2          {
+ 242   3            con1 = 0;
+ 243   3            con2++;
+ 244   3            Seg_State[1] = con2;
+ 245   3          }
+ 246   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 247   2          if ((con2==6))//|| (Seg_State[1]==3)) // con1 == 6
+ 248   2          {
+ 249   3            con2 = 0;
+ 250   3            con3++;
+ 251   3            Seg_State[2] = con3;
+ 252   3          }
+ 253   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 254   2          if((con3==10))//|| (Seg_State[2]==2)) // con1 == 10
+ 255   2          { 
+ 256   3            con3 = 0;
+ 257   3            con4++;
+ 258   3            Seg_State[3] = con4;
+ 259   3          }
+ 260   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 261   2            if ((con4 == 6))//|| (Seg_State[3]==2)) // con1 == 6
+ 262   2            {
+ 263   3              con4 = 0;
+ 264   3              con5++;
+ 265   3              Seg_State[4] = con5;
+ 266   3            }
+ 267   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 268   2            if ((con5 == 10))//|| (Seg_State[4]==2)) // con1 == 10
+ 269   2            {
+ 270   3              con5 = 0;
+ 271   3              con6++;
+ 272   3              Seg_State[5] = con6;
+ 273   3            }
+ 274   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 275   2            if ((con5==4&&con6==2))// || (Seg_State[5]==2&&Seg_State[4]>3))
+ 276   2            {
+ 277   3              con6 = con5 = con4 = con3 = con2 = con1 = 0;
+ 278   3            }
+ 279   2          display(Seg_State[5],Seg_State[4],Seg_State[3],Seg_State[2],Seg_State[1],Seg_State[0]);
+ 280   2        }
+ 281   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    856    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     35      36
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
