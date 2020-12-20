@@ -6,7 +6,7 @@ void main()
 {
 	initialization();
 	/*
-	uncomment the following line to use stop watch mode
+	uncomment the following line to use stop watch mode # Owner Abdullah Atef
 	*/
 	while(1)
 	{
@@ -55,7 +55,7 @@ void initialization()
 	dgt_slct = 1;				//INPUT
 	pause = 1;				//INPUT
 	IE = 0x85; 								// 1000 0101 // bydefault INT is enabled to set the clock 
-	/* Enabling this digit to start shifting and Seg_Control variable gets a initial value*/
+	/* Enabling this digit to start shifting and Seg_Control variable gets a initial value # Owner Abdullah Atef*/
 	Seg_Control = 0x01; 			// to enable first Digit in the 6-digit_7-SEG
 }
 
@@ -137,7 +137,7 @@ void stopWatch(tWord I1, tWord I2, tWord I3, tWord I4, tWord I5, tWord I6)
 //Seg_Pause();
 }
 
-/*  
+/*  # Owner Abdullah Atef
 		display function
 		for hour, minutes 
 		and seconds
@@ -313,7 +313,7 @@ How it works:
 1- Pressing the EDIT button this function will be called.
 2- enable the first SEG if done editing then switch to 2nd one.
 3- Pressing the button increment is calling the Seg_Increment() function
-
+# Owner Abdullah Atef
 ==> Enabling specific segment
 calling Seg_Display() function to do that
 */
@@ -339,7 +339,7 @@ void Seg_Switch()
 }
 /*
 Seg_Increment() function to increment according to 
-Increment SW, No need to know the target segment
+Increment SW, No need to know the target segment # Owner Abdullah Atef
 */
 
 void Seg_Increment()
