@@ -10,7 +10,7 @@
 the digit variable is the variable icrements with shift of 7-SEG_degit in INT0
 
 * digit variable is being with INT0 
-
+ # Owner Abdullah Atef
 * this conflicts with the value
 
 * displayed on the 7-SEG digit
@@ -101,7 +101,7 @@ void InterruptEX1_ISR() interrupt InterruptEX1{
 	//Seg_State[digit%6]++;
 	Seg_State[digit]++;
 	/*
-	Working on displaying numbers in a specific digit with 
+	Working on displaying numbers in a specific digit with # Owner Abdullah Atef
 	digit specifications==> i mean: last hour digit is <= 2, minutes left digit < 6, and left digit of seconds is also < 6;
 	*/
 	//if (digit == 5)
@@ -208,6 +208,7 @@ void display(tWord LH, tWord RH, tWord LM, tWord RM, tWord LS, tWord RS)
 Stop Watch Mode
 */
 /*
+ # Owner Abdullah Atef
 I! refer to index #1 of the array ==> Seg_State
 */
 void stopWatch(tWord I1, tWord I2, tWord I3, tWord I4, tWord I5, tWord I6)
